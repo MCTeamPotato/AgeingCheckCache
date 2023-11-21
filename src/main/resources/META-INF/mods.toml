@@ -1,0 +1,19 @@
+modLoader = "javafml"
+loaderVersion = "[36,)"
+license = "Unlicense"
+
+[[mods]]
+modId = "ageingcheckcache"
+version = "${version}"
+displayName = "AgeingCheckCache"
+authors = "TeamPotato"
+description = '''
+A Minecraft Mod.
+'''
+
+[[dependencies.ageingcheckcache]]
+modId = "forge"
+mandatory = true
+versionRange = "[36,)"
+ordering = "NONE"
+side = "BOTH"
