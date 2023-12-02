@@ -3,6 +3,7 @@ package com.teampotato.ageingcheckcache.mixin;
 import com.mrbysco.ageingspawners.config.SpawnerConfig;
 import com.mrbysco.ageingspawners.handler.AgeHandler;
 import com.mrbysco.ageingspawners.util.AgeingWorldData;
+import com.teampotato.ageingcheckcache.api.ExtendedBlock;
 import com.teampotato.ageingcheckcache.api.ExtendedEntityType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,13 +34,12 @@ public abstract class AgeHandlerMixin {
             ServerLevel world = (ServerLevel) event.getWorld();
             BaseSpawner spawner = event.getSpawner();
             if (spawner == null) return;
-            EntityType<?> entityType = event.getEntity().getType();
-            switch (SpawnerConfig.SERVER.spawnerMode.get()) {
-                case BLACKLIST: {
+            Block spawnerBlock = world.getBlockState(spawner.getPos()).getBlock();
+            if (((ExtendedBlock)spawnerBlock).ageingCheckCache$isTrackableSpawner()) {
+                EntityType<?> entityType = event.getEntity().getType();
+                if (SpawnerConfig.SERVER.spawnerMode.get().equals(SpawnerConfig.EnumAgeingMode.BLACKLIST)) {
                     this.ageingCheckCache$handleBlacklist(world, spawner, entityType);
-                    break;
-                }
-                case WHITELIST: {
+                } else {
                     this.ageingCheckCache$handleWhitelist(world, spawner, entityType);
                 }
             }
